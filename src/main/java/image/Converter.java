@@ -9,67 +9,39 @@ import java.net.URL;
 
 
 public class Converter implements TextGraphicsConverter {
-
     public int maxWidth;
     public int maxHeight;
     public double maxRatio;
-    private double ratio = 0;
-    private int newWidth;
-    private int newHeight;
-
-
     Schema schema = new Schema();
 
     @Override
     public String convert(String url) throws IOException, BadImageSizeException {
 
+        double ratio = 0;
+        int newWidth = 0;
+        int newHeight = 0;
+
         String str1 = "";
 
         BufferedImage img = ImageIO.read(new URL(url));
 
-        System.out.println("img.getWidth()" + img.getWidth());
-        System.out.println("img.getHeight()" + img.getHeight());
-
-
         if (img.getWidth() > maxWidth || img.getHeight() > maxHeight) {
 
-            //*******************************************************
-            System.out.println("maxWidth" + maxWidth);
-            System.out.println("maxHeight" + maxHeight);
-            System.out.println("maxRatio" + maxRatio);
-            //******************************************************
-
             if (img.getWidth() > img.getHeight()) {
-                System.out.println("img.getWidth() > img.getHeight()");
 
                 ratio = (double) img.getWidth() / img.getHeight();
-
-                System.out.println("ratio" + ratio);
-                System.out.println("maxRatio" + maxRatio);
 
                 if (ratio > maxRatio) {
                     throw new BadImageSizeException(ratio, maxRatio);
                 }
-
                 int valueHeight = (int) (maxWidth / ratio);
 
                 newWidth = maxWidth;
                 newHeight = valueHeight;
 
-                System.out.println("newWidth" + newWidth);
-                System.out.println("newHeight" + newHeight);
-
             } else if (img.getHeight() > img.getWidth()) {
 
-                System.out.println("img.getHeight() > img.getWidth()");
-
-                System.out.println("img.getWidth()" + img.getWidth());
-                System.out.println("img.getHeight()" + img.getHeight());
-
                 ratio = (double) img.getHeight() / img.getWidth();
-
-                System.out.println("percent1 " + ratio);
-                System.out.println("maxRatio" + maxRatio);
 
                 if (ratio > maxRatio) {
                     throw new BadImageSizeException(ratio, maxRatio);
@@ -79,93 +51,12 @@ public class Converter implements TextGraphicsConverter {
 
                 newWidth = valueWidth;
                 newHeight = maxHeight;
-
-                System.out.println("newWidth!!!!!!" + newWidth);
-                System.out.println("newHeight!!!!!!" + newHeight);
             }
 
         } else {
             newWidth = img.getWidth();
             newHeight = img.getHeight();
         }
-
-
-//
-//        if (img.getWidth() > 100 || img.getHeight() > 100) {
-//
-//            //*******************************************************
-//            System.out.println("maxWidth" + maxWidth);
-//            System.out.println("maxHeight" + maxHeight);
-//            System.out.println("maxRatio" + maxRatio);
-//            //******************************************************
-//
-//            if (img.getWidth() > img.getHeight()) {
-//                System.out.println("img.getWidth() > img.getHeight()");
-//
-//                double percent = (double) img.getWidth() / img.getHeight();
-//
-//                System.out.println("percent" + percent);
-//                System.out.println("maxRatio" + maxRatio);
-//
-//                if (percent > maxRatio) {
-//                    throw new BadImageSizeException(maxRatio, percent);
-//                }
-//
-//                int resultHeight = (int) (100 / percent);
-//
-//                newWidth = 100;
-//                newHeight = resultHeight;
-//
-//                System.out.println("newWidth" + newWidth);
-//                System.out.println("newHeight" + newHeight);
-//
-//            } else if (img.getHeight() > img.getWidth()) {
-//
-//                System.out.println("img.getHeight() > img.getWidth()");
-//
-//                System.out.println("img.getWidth()" + img.getWidth());
-//                System.out.println("img.getHeight()" + img.getHeight());
-//                double percent1 = (double) img.getHeight() / img.getWidth();
-//
-//
-//                System.out.println("percent1 " + percent1);
-//                System.out.println("maxRatio" + maxRatio);
-//
-//                if (percent1 > maxRatio) {
-//                    throw new BadImageSizeException(maxRatio, percent1);
-//                }
-//                int resultWidth = (int) (100 / percent1);
-//
-//                newWidth = resultWidth;
-//                newHeight = 100;
-//
-//                System.out.println("newWidth!!!!!!" + newWidth);
-//                System.out.println("newHeight!!!!!!" + newHeight);
-//
-//
-//            }
-//
-//        } else {
-//            newWidth = img.getWidth();
-//            newHeight = img.getHeight();
-//        }
-
-//        ratio = img.getWidth() / img.getHeight();
-
-//        if (maxRatio != 0) {
-//            if (ratio > maxRatio) {
-//                throw new BadImageSizeException(ratio, maxRatio);
-//            }
-//        }
-
-
-        //-------------------------------------
-//        int newWidth = width;
-//        int newHeight = height;
-
-//        int newWidth = img.getWidth();
-//        int newHeight = img.getHeight();
-        //-------------------------------------
 
         // Теперь нам нужно попросить картинку изменить свои размеры на новые.
         // Последний параметр означает, что мы просим картинку плавно сузиться
@@ -203,7 +94,6 @@ public class Converter implements TextGraphicsConverter {
         // получить соответствующий символ c. Логикой превращения цвета
         // в символ будет заниматься другой объект, который мы рассмотрим ниже
 
-
         for (int h = 0; h < newHeight; h++) {
             for (int w = 0; w < newWidth; w++) {
                 int color = bwRaster.getPixel(w, h, new int[3])[0];
@@ -214,21 +104,12 @@ public class Converter implements TextGraphicsConverter {
             }
             str1 += "\n";
         }
-
         // Осталось собрать все символы в один большой текст.
         // Для того, чтобы изображение не было слишком узким, рекомендую
         // каждый пиксель превращать в два повторяющихся символа, полученных
         // от схемы.
-
-
-        // if(width < img.getWidth() || height < img.getHeight()){
-        //  throw new BadImageSizeException()
-        // }
-
-
         return str1;
     }
-
 
     @Override
     public void setMaxWidth(int width) {
@@ -247,6 +128,5 @@ public class Converter implements TextGraphicsConverter {
 
     @Override
     public void setTextColorSchema(TextColorSchema schema) {
-
     }
 }

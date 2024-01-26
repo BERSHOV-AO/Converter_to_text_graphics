@@ -4,7 +4,7 @@ import image.TextGraphicsConverter;
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        //TextGraphicsConverter converter = null; // Создайте тут объект вашего класса конвертера
+        // Создайте тут объект вашего класса конвертера
         TextGraphicsConverter converter = new Converter();
         converter.setMaxRatio(10);
         converter.setMaxWidth(222);
